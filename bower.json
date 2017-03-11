@@ -1,0 +1,17 @@
+{
+  "name": "ndx-error-redirect",
+  "description": "clientside redirect on server errors for ndx-framework",
+  "main": "build/index.js",
+  "authors": [
+    "ndxbxrme"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/ndxbxrme/ndx-error-redirect",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
