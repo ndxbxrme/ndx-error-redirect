@@ -1,6 +1,6 @@
 {
   "name": "ndx-error-redirect",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "clientside redirect on server errors for ndx-framework",
   "main": "build/index.js",
   "scripts": {

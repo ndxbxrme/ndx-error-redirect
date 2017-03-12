@@ -3,7 +3,7 @@ module = null
 try
   module = angular.module 'ndx'
 catch e
-  module =angular.module 'ndx-error-redirect', []
+  module = angular.module 'ndx-error-redirect', []
 module.factory 'errorRedirect', ($rootScope) ->
   errors = ['AUTH_REQUIRED', 'FORBIDDEN', 'UNAUTHORIZED']
   redirect = 'error'
