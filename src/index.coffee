@@ -9,6 +9,7 @@ module.factory 'errorRedirect', ($rootScope) ->
   redirect = 'error'
   passError = false
   $rootScope.$on '$stateChangeError', (event, toState, toParams, fromState, fromParams, error) ->
+    console.log 'error', error
     if errors.indexOf(error) isnt -1
       params = null
       if passError

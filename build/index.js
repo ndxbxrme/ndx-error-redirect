@@ -18,6 +18,7 @@
     passError = false;
     $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
       var params;
+      console.log('error', error);
       if (errors.indexOf(error) !== -1) {
         params = null;
         if (passError) {
