@@ -8,7 +8,7 @@
     module = angular.module('ndx');
   } catch (error) {
     e = error;
-    module = angular.module('ndx-error-redirect', []);
+    module = angular.module('ndx', []);
   }
 
   module.provider('ErrorInterceptor', function() {
