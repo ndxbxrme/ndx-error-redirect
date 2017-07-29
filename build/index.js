@@ -11,11 +11,13 @@
     module = angular.module('ndx', []);
   }
 
-  module.provider('ErrorInterceptor', function() {
+  module.provider('ErrorRedirect', function() {
     var errorState;
     errorState = 'error';
     return {
-      errorState: errorState,
+      errorState: function(_errorState) {
+        return errorState = _errorState;
+      },
       $get: function($state) {
         return {
           responseError: function(rejection) {
@@ -28,7 +30,7 @@
       }
     };
   }).config(function($httpProvider) {
-    return $httpProvider.interceptors.push('ErrorInterceptor');
+    return $httpProvider.interceptors.push('ErrorRedirect');
   });
 
 }).call(this);
