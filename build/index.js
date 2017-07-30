@@ -18,19 +18,19 @@
       errorState: function(_errorState) {
         return errorState = _errorState;
       },
-      $get: function($state) {
+      $get: function($state, $q) {
         return {
           responseError: function(rejection) {
             if (rejection.status === 401) {
               $state.go(errorState);
             }
-            return rejection;
+            return $q.reject(rejection);
           }
         };
       }
     };
   }).config(function($httpProvider) {
-    return $httpProvider.interceptors.push('ErrorRedirect');
+    return $httpProvider.interceptors.unshift('ErrorRedirect');
   });
 
 }).call(this);
