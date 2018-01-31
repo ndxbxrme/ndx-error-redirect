@@ -12,19 +12,36 @@
   }
 
   module.provider('ErrorRedirect', function() {
-    var errorState;
-    errorState = 'error';
+    var loggedOutState, maintenanceState;
+    console.log('hoooow');
+    loggedOutState = 'logged-out';
+    ({
+      loggedOutState: function(_loggedOutState) {
+        return loggedOutState = _loggedOutState;
+      }
+    });
+    maintenanceState = 'maintenance';
     return {
-      errorState: function(_errorState) {
-        return errorState = _errorState;
+      maintenanceState: function(_maintenanceState) {
+        return maintenanceState = _maintenanceState;
       },
       $get: function($state, $q) {
         return {
           responseError: function(rejection) {
-            if (rejection.status === 401) {
-              $state.go(errorState);
+            console.log($state.current);
+            if ($state.current.name) {
+              if (rejection.status === 401) {
+                if ($state.current.name !== loggedOutState) {
+                  $state.go(loggedOutState);
+                }
+              }
+              if (rejection.status === 503) {
+                if ($state.current.name !== maintenanceState) {
+                  $state.go(maintenanceState);
+                }
+              }
             }
-            return $q.reject(rejection);
+            return rejection;
           }
         };
       }
