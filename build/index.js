@@ -1,44 +1,75 @@
 (function() {
   'use strict';
-  var e, error, module;
+  var e, error1, module;
 
   module = null;
 
   try {
     module = angular.module('ndx');
-  } catch (error) {
-    e = error;
+  } catch (error1) {
+    e = error1;
     module = angular.module('ndx', []);
   }
 
   module.provider('ErrorRedirect', function() {
-    var loggedOutState, maintenanceState;
-    console.log('hoooow');
-    loggedOutState = 'logged-out';
-    ({
-      loggedOutState: function(_loggedOutState) {
-        return loggedOutState = _loggedOutState;
+    var errors, globalIgnore;
+    errors = {
+      401: {
+        state: 'logged-out',
+        ignore: [/\/forgot/, /\/logged-out/]
       }
-    });
-    maintenanceState = 'maintenance';
+    };
+    globalIgnore = [/\/forgot/, /\/invite/];
     return {
-      maintenanceState: function(_maintenanceState) {
-        return maintenanceState = _maintenanceState;
+      config: function(args) {
+        var status;
+        if (args.errors) {
+          for (status in args.errors) {
+            errors[status] = args.errors[status];
+          }
+        }
+        return globalIgnore = args.globalIgnore || errors;
       },
-      $get: function($state, $q) {
+      $get: function($injector, $q, $window, $location) {
         return {
+          request: function(config) {
+            return config;
+          },
+          response: function(config) {
+            return config;
+          },
           responseError: function(rejection) {
-            console.log($state.current);
-            if ($state.current.name) {
-              if (rejection.status === 401) {
-                if ($state.current.name !== loggedOutState) {
-                  $state.go(loggedOutState);
+            var $state, error, i, ignore, j, len, len1, ref, regex, status;
+            $state = $injector.get('$state');
+            for (status in errors) {
+              if (+status === rejection.status) {
+                error = errors[status];
+                ignore = false;
+                for (i = 0, len = globalIgnore.length; i < len; i++) {
+                  regex = globalIgnore[i];
+                  if (regex.test($location.path())) {
+                    ignore = true;
+                    break;
+                  }
                 }
-              }
-              if (rejection.status === 503) {
-                if ($state.current.name !== maintenanceState) {
-                  $state.go(maintenanceState);
+                if (!ignore) {
+                  ref = error.ignore;
+                  for (j = 0, len1 = ref.length; j < len1; j++) {
+                    regex = ref[j];
+                    if (regex.test($location.path())) {
+                      ignore = true;
+                      break;
+                    }
+                  }
+                  if (!ignore) {
+                    if ($state.current.name !== error.state) {
+                      $location.path(error.state);
+                      return $q.reject(rejection);
+                      true;
+                    }
+                  }
                 }
+                break;
               }
             }
             return rejection;

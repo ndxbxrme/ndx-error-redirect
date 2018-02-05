@@ -5,23 +5,42 @@ try
 catch e
   module = angular.module 'ndx', []
 module.provider 'ErrorRedirect', ->
-  console.log 'hoooow'
-  loggedOutState = 'logged-out'
-  loggedOutState: (_loggedOutState) ->
-    loggedOutState = _loggedOutState
-  maintenanceState = 'maintenance'
-  maintenanceState: (_maintenanceState) ->
-    maintenanceState = _maintenanceState
-  $get: ($state, $q) ->
+  errors =
+    401:
+      state: 'logged-out'
+      ignore: [/\/forgot/, /\/logged-out/]
+  globalIgnore = [/\/forgot/, /\/invite/]
+  config: (args) ->
+    if args.errors
+      for status of args.errors
+        errors[status] = args.errors[status]
+    globalIgnore = args.globalIgnore or errors
+  $get: ($injector, $q, $window, $location) ->
+    request: (config) ->
+      config
+    response: (config) ->
+      config
     responseError: (rejection) ->
-      console.log $state.current
-      if $state.current.name
-        if rejection.status is 401
-          if $state.current.name isnt loggedOutState
-            $state.go loggedOutState
-        if rejection.status is 503
-          if $state.current.name isnt maintenanceState
-            $state.go maintenanceState
+      $state = $injector.get '$state'
+      for status of errors
+        if +status is rejection.status
+          error = errors[status]
+          ignore = false
+          for regex in globalIgnore
+            if regex.test $location.path()
+              ignore = true
+              break
+          if not ignore
+            for regex in error.ignore
+              if regex.test $location.path()
+                ignore = true
+                break
+            if not ignore
+              if $state.current.name isnt error.state
+                $location.path error.state
+                return $q.reject(rejection)
+                true
+          break
       rejection
 .config ($httpProvider) ->
   $httpProvider.interceptors.unshift 'ErrorRedirect'
