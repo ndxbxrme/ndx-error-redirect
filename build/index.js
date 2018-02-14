@@ -22,13 +22,14 @@
     globalIgnore = [/\/forgot/, /\/invite/];
     return {
       config: function(args) {
-        var status;
+        var results, status;
         if (args.errors) {
+          results = [];
           for (status in args.errors) {
-            errors[status] = args.errors[status];
+            results.push(errors[status] = args.errors[status]);
           }
+          return results;
         }
-        return globalIgnore = args.globalIgnore || errors;
       },
       $get: function($injector, $q, $window, $location) {
         return {
@@ -42,6 +43,7 @@
             var $state, error, i, ignore, j, len, len1, ref, regex, status;
             $state = $injector.get('$state');
             for (status in errors) {
+              console.log('status', status);
               if (+status === rejection.status) {
                 error = errors[status];
                 ignore = false;

@@ -14,7 +14,7 @@ module.provider 'ErrorRedirect', ->
     if args.errors
       for status of args.errors
         errors[status] = args.errors[status]
-    globalIgnore = args.globalIgnore or errors
+    #globalIgnore = args.globalIgnore or errors
   $get: ($injector, $q, $window, $location) ->
     request: (config) ->
       config
@@ -23,6 +23,7 @@ module.provider 'ErrorRedirect', ->
     responseError: (rejection) ->
       $state = $injector.get '$state'
       for status of errors
+        console.log 'status', status
         if +status is rejection.status
           error = errors[status]
           ignore = false
