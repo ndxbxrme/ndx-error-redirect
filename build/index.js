@@ -31,7 +31,7 @@
           return results;
         }
       },
-      $get: function($injector, $q, $window, $location) {
+      $get: function($injector, $q, $window, $location, $timeout) {
         return {
           request: function(config) {
             return config;
@@ -43,7 +43,6 @@
             var $state, error, i, ignore, j, len, len1, ref, regex, status;
             $state = $injector.get('$state');
             for (status in errors) {
-              console.log('status', status);
               if (+status === rejection.status) {
                 error = errors[status];
                 ignore = false;
@@ -65,16 +64,18 @@
                   }
                   if (!ignore) {
                     if ($state.current.name !== error.state) {
-                      $location.path(error.state);
-                      return $q.reject(rejection);
-                      true;
+                      $timeout(function() {
+                        return $location.path(error.state);
+                      }, 10);
+                      $q.resolve('error');
+                      return false;
                     }
                   }
                 }
                 break;
               }
             }
-            return rejection;
+            return true;
           }
         };
       }

@@ -15,7 +15,7 @@ module.provider 'ErrorRedirect', ->
       for status of args.errors
         errors[status] = args.errors[status]
     #globalIgnore = args.globalIgnore or errors
-  $get: ($injector, $q, $window, $location) ->
+  $get: ($injector, $q, $window, $location, $timeout) ->
     request: (config) ->
       config
     response: (config) ->
@@ -23,7 +23,6 @@ module.provider 'ErrorRedirect', ->
     responseError: (rejection) ->
       $state = $injector.get '$state'
       for status of errors
-        console.log 'status', status
         if +status is rejection.status
           error = errors[status]
           ignore = false
@@ -38,10 +37,12 @@ module.provider 'ErrorRedirect', ->
                 break
             if not ignore
               if $state.current.name isnt error.state
-                $location.path error.state
-                return $q.reject(rejection)
-                true
+                $timeout ->
+                  $location.path error.state
+                , 10
+                $q.resolve('error')
+                return false
           break
-      rejection
+      true
 .config ($httpProvider) ->
   $httpProvider.interceptors.unshift 'ErrorRedirect'
