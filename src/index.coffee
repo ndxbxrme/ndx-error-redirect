@@ -43,6 +43,6 @@ module.provider 'ErrorRedirect', ->
                 $q.resolve('error')
                 return false
           break
-      true
+      rejection
 .config ($httpProvider) ->
   $httpProvider.interceptors.unshift 'ErrorRedirect'

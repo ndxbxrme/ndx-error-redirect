@@ -75,7 +75,7 @@
                 break;
               }
             }
-            return true;
+            return rejection;
           }
         };
       }
