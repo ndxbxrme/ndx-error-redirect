@@ -39,7 +39,7 @@ module.provider 'ErrorRedirect', ->
               if $state.current.name isnt error.state
                 $timeout ->
                   $location.path error.state
-                , 10
+                , 50
                 $q.resolve('error')
                 return false
           break

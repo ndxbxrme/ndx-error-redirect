@@ -66,7 +66,7 @@
                     if ($state.current.name !== error.state) {
                       $timeout(function() {
                         return $location.path(error.state);
-                      }, 10);
+                      }, 50);
                       $q.resolve('error');
                       return false;
                     }
