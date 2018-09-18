@@ -9,7 +9,7 @@ module.provider 'ErrorRedirect', ->
     401:
       state: 'logged-out'
       ignore: [/\/forgot/, /\/logged-out/]
-  globalIgnore = [/\/forgot/, /\/invite/]
+  globalIgnore = [/\/forgot/, /\/invite/, /\/refresh-login/]
   config: (args) ->
     if args.errors
       for status of args.errors

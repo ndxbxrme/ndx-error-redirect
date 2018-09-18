@@ -19,7 +19,7 @@
         ignore: [/\/forgot/, /\/logged-out/]
       }
     };
-    globalIgnore = [/\/forgot/, /\/invite/];
+    globalIgnore = [/\/forgot/, /\/invite/, /\/refresh-login/];
     return {
       config: function(args) {
         var results, status;
